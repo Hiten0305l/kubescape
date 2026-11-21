@@ -219,8 +219,10 @@ func (cp *CsvPrinter) ActionPrint(ctx context.Context, opaSessionObj *cautils.OP
 					reason:    remediation,
 				}] = struct{}{}
 			} else {
-				if ctrl := summaryControls.GetControl(reportsummary.EControlCriteriaID, ctrlID); ctrl != nil {
-					remediation = ctrl.GetRemediation()
+				if summaryControls != nil {
+					if ctrl := summaryControls.GetControl(reportsummary.EControlCriteriaID, ctrlID); ctrl != nil {
+						remediation = ctrl.GetRemediation()
+					}
 				}
 			}
 
@@ -249,8 +251,10 @@ func (cp *CsvPrinter) ActionPrint(ctx context.Context, opaSessionObj *cautils.OP
 	for _, sc := range skippedControls {
 		name := sc.name
 		if name == "" || name == sc.controlID {
-			if ctrl := summaryControls.GetControl(reportsummary.EControlCriteriaID, sc.controlID); ctrl != nil && ctrl.GetName() != "" {
-				name = ctrl.GetName()
+			if summaryControls != nil {
+				if ctrl := summaryControls.GetControl(reportsummary.EControlCriteriaID, sc.controlID); ctrl != nil && ctrl.GetName() != "" {
+					name = ctrl.GetName()
+				}
 			}
 		}
 		if name == "" {
@@ -258,8 +262,10 @@ func (cp *CsvPrinter) ActionPrint(ctx context.Context, opaSessionObj *cautils.OP
 		}
 		severity := apis.ControlSeverityToString(sc.scoreFactor)
 		if severity == "" || severity == "Unknown" {
-			if ctrl := summaryControls.GetControl(reportsummary.EControlCriteriaID, sc.controlID); ctrl != nil && ctrl.GetScoreFactor() > 0 {
-				severity = apis.ControlSeverityToString(ctrl.GetScoreFactor())
+			if summaryControls != nil {
+				if ctrl := summaryControls.GetControl(reportsummary.EControlCriteriaID, sc.controlID); ctrl != nil && ctrl.GetScoreFactor() > 0 {
+					severity = apis.ControlSeverityToString(ctrl.GetScoreFactor())
+				}
 			}
 		}
 		if severity == "" {
